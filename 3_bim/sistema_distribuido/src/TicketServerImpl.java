@@ -20,7 +20,7 @@ public class TicketServerImpl extends UnicastRemoteObject
     }
     /* fim de REMOVER*/
 
-    public String listFromDirectory(String path) throws RemoteException{
+    public String listFromDirectory(String path, String name) throws RemoteException{
         File f = new File(path);
         if(f == null){
             System.out.println("Diretorio nao encontrado.");
@@ -33,13 +33,12 @@ public class TicketServerImpl extends UnicastRemoteObject
             Path filePath = new File(file).toPath();
             if(Files.isDirectory(filePath)){
                 str = str + filePath + " (dir)\n";
-//                System.out.println(filePath + " (dir)");
             }else{
                 str = str + filePath + "\n";
-//                System.out.println(filePath);
             }
         }
 
+        System.out.println("Listed files to '" + name + "'");
         return str;
     }
 

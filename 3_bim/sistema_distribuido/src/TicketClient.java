@@ -37,10 +37,13 @@ public class TicketClient {
         /* fim do codigo exemplo */
 
         Scanner sc = new Scanner(System.in);
+        System.out.println("Insira o nome do usuario: ");
+        String userName = sc.next();
+
         String path = sc.next();
 
         try {
-            String s = server.listFromDirectory(path);
+            String s = server.listFromDirectory(path, userName);
             System.out.println(s);
         } catch (RemoteException e) {
             e.printStackTrace();
