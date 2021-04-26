@@ -4,6 +4,30 @@ import java.rmi.*;
 import java.util.Scanner;
 
 public class TicketClient {
+    /* REMOVER *
+    private enum Operacoes{
+        Listar(1), Criar(2), Renomear(3), Remover(4);
+
+        private final int valor;
+        Operacoes(int valorOpcao){
+            valor = valorOpcao;
+        }
+        public int getValor(){
+            return valor;
+        }
+    }
+    /* fim de REMOVER */
+
+    public static void printMainMenu(){
+        System.out.println("------------------------------");
+        System.out.println("Insira a opcao desejada (qualquer outro numero para sair)");
+        System.out.println("1. Listar arquivos");
+        System.out.println("2. Importar arquivo");
+        System.out.println("3. Renomear arquivo");
+        System.out.println("4. Remover arquivo");
+        System.out.println("");
+    }
+
     public static void main(String[] args) {
         /* codigo necessario */
         // install RMI security manager
@@ -37,12 +61,35 @@ public class TicketClient {
         /* fim do codigo exemplo */
 
         Scanner sc = new Scanner(System.in);
-        String path = sc.next();
 
-        try {
-            String s = server.listFromDirectory(path);
-            System.out.println(s);
-        } catch (RemoteException e) {
+        System.out.println("Insira o nome do usuario: ");
+        String userName = sc.next();
+
+//        System.out.println("Insira o caminho do diretorio compartilhado");
+//        String rootDirectory = sc.next();
+
+        Integer opcao;
+
+        try{
+            do {
+                printMainMenu();
+                opcao = sc.nextInt();
+
+                switch (opcao) {
+                    case 1: //Listar
+                        String s = server.listFromDirectory(userName);
+                        System.out.println(s);
+                        break;
+                    case 2: //Criar
+
+                        break;
+                    case 3: //Renomear
+                        break;
+                    case 4: //Remover
+                        break;
+                }
+            } while (opcao >= 1 && opcao <= 4);
+        }catch(RemoteException e){
             e.printStackTrace();
         }
     }
