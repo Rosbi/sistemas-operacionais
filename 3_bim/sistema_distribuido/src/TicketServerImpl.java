@@ -1,6 +1,6 @@
 // TicketServerImpl.java
 
-import java.io.File;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.rmi.*;
@@ -21,7 +21,7 @@ public class TicketServerImpl extends UnicastRemoteObject implements TicketServe
     }
     /* fim de REMOVER*/
 
-    public String listFromDirectory(String name) throws RemoteException{
+    public String listFromDirectory(String clientName) throws RemoteException{
         // Checa se o diretorio existe
         File f = new File(dirPath);
         if(!f.exists()){
@@ -30,7 +30,7 @@ public class TicketServerImpl extends UnicastRemoteObject implements TicketServe
         }
 
         String[] files = f.list();
-        String str = new String("");
+        String str = "";
         for(String file : files){
             Path filePath = new File(file).toPath();
             if(Files.isDirectory(filePath)){
@@ -40,8 +40,55 @@ public class TicketServerImpl extends UnicastRemoteObject implements TicketServe
             }
         }
 
-        System.out.println("Listed files to '" + name + "'");
+        System.out.println("Listed files (" + clientName + ")");
         return str;
+    }
+
+    public void copyFileUsingStream(File source, String clientName) throws IOException, RemoteException {
+        File dest = new File(dirPath + "/" + source.getName());
+
+        InputStream is = null;
+        OutputStream os = null;
+         try {
+             is = new FileInputStream(source);
+             os = new FileOutputStream(dest);
+             byte[] buffer = new byte[1024];
+             int length;
+
+             while ((length = is.read(buffer)) > 0) {
+                 os.write(buffer, 0, length);
+             }
+
+             System.out.println("Copied '" + source.getName() + "' (" + clientName + ")");
+         }catch (IOException e){
+             System.out.println("Couldn't copy '" + source.getName() + "' (" + clientName + ")");
+         }finally{
+             if(is != null) {
+                 is.close();
+             }
+             if(os != null) {
+                 os.close();
+             }
+         }
+
+    }
+
+    public void deleteFile(String name, String clientName) throws RemoteException{
+        File arq = new File(dirPath + "/" + name);
+        if(arq.delete()){
+            System.out.println("Arquivo deletado '" + name + "' (" + clientName + ")");
+        }else{
+            System.out.println("Erro ao deletar aquivo '" + name + "' (" + clientName + ")");
+        }
+    }
+
+    public void renameFile(String name, String newName, String clientName) throws RemoteException{
+        File arq = new File(dirPath + "/" + name);
+        if(arq.renameTo(new File(dirPath+"/"+newName))){
+            System.out.println("arquivo renomeado para '" + newName + "' (" + clientName + ")");
+        }else{
+            System.out.println("Erro ao renomear aquivo");
+        }
     }
 
     public static void main(String[] args) {

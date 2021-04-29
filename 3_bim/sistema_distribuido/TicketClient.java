@@ -1,5 +1,7 @@
 // TicketClient.java
 
+import java.io.File;
+import java.io.IOException;
 import java.rmi.*;
 import java.util.Scanner;
 
@@ -69,7 +71,8 @@ public class TicketClient {
 //        String rootDirectory = sc.next();
 
         Integer opcao;
-
+        String name;
+        String newName;
         try{
             do {
                 printMainMenu();
@@ -81,15 +84,28 @@ public class TicketClient {
                         System.out.println(s);
                         break;
                     case 2: //Criar
-
+                        System.out.print("Escreva o caminho para o arquivo a ser adicionado: ");
+                        name = sc.next();
+                        File source = new File(name);
+                        server.copyFileUsingStream(source, userName);
                         break;
                     case 3: //Renomear
+                        System.out.print("Escreva o nome do arquivo a ser renomeado: ");
+                        name = sc.next();
+                        System.out.println("Escreva o novo nome do arquivo:");
+                        newName = sc.next();
+                        server.renameFile(name, newName, userName);
                         break;
                     case 4: //Remover
+                        System.out.print("Escreva o nome do arquivo a ser deletado: ");
+                        name = sc.next();
+                        server.deleteFile(name, userName);
                         break;
                 }
             } while (opcao >= 1 && opcao <= 4);
         }catch(RemoteException e){
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
